@@ -1,7 +1,6 @@
 class HomeController{
-    // [GET] /
     index(req, res, next){
-        res.render('login', { layout: 'loginLayout'});
+        res.send(`Welcome to home ${req.user.email}`);
     }
 }
 

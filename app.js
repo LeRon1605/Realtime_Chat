@@ -11,6 +11,7 @@ const httpsOptions = {
 const server = https.createServer(httpsOptions, app);
 
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 // Connect to database
 const db = require('./db/connect');
@@ -20,6 +21,7 @@ db.connect();
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(cookieParser());
 
 // Setup routes
 const routes = require('./routes/index');

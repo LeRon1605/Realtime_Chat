@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const homeController = require('../controllers/HomeController');
-router
-    .get('/', homeController.index)
+const passport = require('passport');
+const passportConfig = require('../passport/index');
 
+const homeController = require('../controllers/homeController');
+
+const LoginMiddleware = require('../middleware/login');
+router
+    .get('/', LoginMiddleware.checkLogin, passport.authenticate('jwt', { session: false, failureRedirect: '/' }), homeController.index)
 module.exports = router;
