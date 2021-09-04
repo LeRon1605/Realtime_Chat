@@ -8,11 +8,12 @@ const User = require('../db/models/user');
 
 // Passport local
 passport.use(new LocalStrategy({
-    usernameField: 'email'
-}, async (email, password, done) => {
+    usernameField: 'email',
+    passReqToCallback: true
+}, async (req, email, password, done) => {
     try{
         const user = await User.findOne({ email, password });
-        if (!user) done(null, false);
+        if (!user) done(null, false, req.flash('message', 'Email or password is incorrect'));
         else done(null, user);
     }catch(err){
         done(err);
@@ -21,7 +22,7 @@ passport.use(new LocalStrategy({
 
 // Passport jwt 
 passport.use(new JWTSrategy({
-    jwtFromRequest: ExtractJwt.fromExtractors([(req) => req.cookies.token]),
+    jwtFromRequest: ExtractJwt.fromExtractors([(req) => req.session.token]),
     secretOrKey: fs.readFileSync('./key/publickey.crt'),
     algorithms: 'RS256'
 }, async (payload, done) => {

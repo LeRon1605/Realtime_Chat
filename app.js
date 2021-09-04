@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const flash = require('connect-flash');
 const exphbs  = require('express-handlebars');
 // Setup https server
 const https = require('https');
@@ -16,13 +17,18 @@ const cookieParser = require('cookie-parser');
 // Connect to database
 const db = require('./db/connect');
 db.connect();
-
+const session = require('express-session');
+app.use(session({ cookie: { maxAge: 60000 }, 
+    secret: 'woot',
+    resave: false, 
+    saveUninitialized: false
+}));
+app.use(flash());
 // Using static files and bodyParser
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cookieParser());
-
 // Setup routes
 const routes = require('./routes/index');
 routes(app);

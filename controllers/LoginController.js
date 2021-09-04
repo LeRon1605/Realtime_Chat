@@ -14,7 +14,7 @@ class LoginController{
         try{
             const { user } = req;
             const token = signToken(user._id);
-            res.cookie('token', token);
+            req.session.token = token;
             res.redirect('/home');
         }catch(err){
             next(err);

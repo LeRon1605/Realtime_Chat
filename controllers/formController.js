@@ -1,7 +1,8 @@
 class FormController{
     // [GET] /
     index(req, res, next){
-        res.render('login', { layout: 'loginLayout'});
+        const error = req.flash('message') || '';
+        res.render('login', { layout: 'loginLayout', message: error });
     }
 }
 

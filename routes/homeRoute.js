@@ -8,5 +8,5 @@ const homeController = require('../controllers/homeController');
 
 const LoginMiddleware = require('../middleware/login');
 router
-    .get('/', LoginMiddleware.checkLogin, passport.authenticate('jwt', { session: false, failureRedirect: '/' }), homeController.index)
+    .get('/', passport.authenticate('jwt', { session: false, failureRedirect: '/' }), homeController.index)
 module.exports = router;
