@@ -1,6 +1,7 @@
 class HomeController{
     index(req, res, next){
-        res.render('home', { layout: 'homeLayout' })
+        const user = req.user.toObject();
+        res.render('home', { layout: 'homeLayout', user })
     }
 }
 

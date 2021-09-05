@@ -20,6 +20,18 @@ class LoginController{
             next(err);
         }
     }
+    loginFB(req, res, next){
+        try{
+            const user = req.newUser || req.user;
+            const token = signToken(user._id);
+            req.session.token = token;
+            res.redirect('/home');
+        }catch(err){
+            next(err);
+        }
+        
+        
+    }
 }
 
 module.exports = new LoginController();
