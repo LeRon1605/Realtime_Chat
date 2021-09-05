@@ -3,6 +3,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const JWTSrategy = require('passport-jwt').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const fs = require('fs');
 
 const User = require('../db/models/user');
@@ -59,6 +60,35 @@ passport.use(new FacebookStrategy({
                 authType: 'facebook'
             })
             await newUser.save();
+            done(null, newUser);
+        }else done(null, user);
+    }catch(err){
+        done(err);
+    }
+  }
+));
+
+// Passport google
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "https://localhost:3000/login/auth/google/getInf"
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try{
+        const user = await User.findOne({
+            ggID: profile.id,
+            authType: 'google',
+            email: profile.emails[0].value
+        })
+        if (!user){
+            const newUser = new User({
+                name: profile.displayName,
+                ggID: profile.id,
+                authType: 'google',
+                email: profile.emails[0].value
+            })
+            newUser.save();
             done(null, newUser);
         }else done(null, user);
     }catch(err){
