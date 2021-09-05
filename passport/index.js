@@ -15,7 +15,7 @@ passport.use(new LocalStrategy({
 }, async (req, email, password, done) => {
     try{
         const user = await User.findOne({ email, password });
-        if (!user) done(null, false, req.flash('message', 'Email or password is incorrect'));
+        if (!user) done(null, false, req.flash('messageLogin', 'Email or password is incorrect'));
         else done(null, user);
     }catch(err){
         done(err);
