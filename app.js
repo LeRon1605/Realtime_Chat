@@ -15,12 +15,14 @@ const server = https.createServer(httpsOptions, app);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
+const io = require('socket.io')(server);
 // Connect to database
 const db = require('./db/connect');
 db.connect();
+
 const session = require('express-session');
 app.use(session({ cookie: { maxAge: 60000 }, 
-    secret: 'woot',
+    secret: process.env.SECRET_SESSION,
     resave: false, 
     saveUninitialized: false
 }));
@@ -45,10 +47,25 @@ app.use((req, res, next) => {
 })
 // Error handler
 app.use((error, req, res, next) => {
-    console.log(error);
     const status = error.status || 500;
     res.status(status).json({
         error: error.message
+    })
+})
+let users = [];
+const isExistUser = (name) => {
+    return users.map(user => user.userName).includes(name);
+}
+io.on('connection', (socket) => {
+    socket.on('user_connect', (data) => {
+        if (!isExistUser(data.userName)) users.push({
+            data
+        });
+        io.emit('newUser', users);
+    })
+    socket.on('send_message', (message) => {
+        console.log(message);
+        io.emit('receive_message', message);
     })
 })
 server.listen(3000, () => console.log(`Listening on port 3000`));

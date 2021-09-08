@@ -1,8 +1,8 @@
 <div class="container py-5 px-4">
   <!-- For demo purpose-->
   <div class="row d-flex justify-content-end align-items-stretch">
-    <div class="alert alert-primary mb-0" role="alert">
-        Hello {{{user.name}}}
+    <div class="alert alert-primary mb-0" role="alert" id="username">
+      {{{user.name}}}
     </div>
     <a href="/logout" class="alert alert-danger ml-2 mb-0">Logout</a>
   </div>
@@ -16,18 +16,7 @@
         </div>
 
         <div class="messages-box">
-          <div class="list-group rounded-0">
-
-            <a href="#" class="list-group-item list-group-item-action list-group-item-light rounded-0">
-              <div class="media"><img src="https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg" alt="user" width="50" class="rounded-circle">
-                <div class="media-body ml-4">
-                  <div class="d-flex align-items-center justify-content-between mb-1">
-                    <h6 class="mb-0">Jason Doe</h6><small class="small font-weight-bold">14 Dec</small>
-                  </div>
-                  <p class="font-italic text-muted mb-0 text-small">Lorem ipsum dolor sit amet, consectetur. incididunt ut labore.</p>
-                </div>
-              </div>
-            </a>
+          <div class="list-group rounded-0" id="user-box">
 
           </div>
         </div>
@@ -35,16 +24,7 @@
     </div>
     <!-- Chat Box-->
     <div class="col-7 px-0">
-      <div class="px-4 py-5 chat-box bg-white">
-        <!-- Sender Message-->
-        <div class="media w-50 mb-3"><img src="https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg" alt="user" width="50" class="rounded-circle">
-          <div class="media-body ml-3">
-            <div class="bg-light rounded py-2 px-3 mb-2">
-              <p class="text-small mb-0 text-muted">Test which is a new approach all solutions</p>
-            </div>
-            <p class="small text-muted">12:00 PM | Aug 13</p>
-          </div>
-        </div>
+      <div class="px-4 py-5 chat-box bg-white" id="chat-box">
 
         <!-- Reciever Message-->
         <div class="media w-50 ml-auto mb-3">
@@ -55,19 +35,18 @@
             <p class="small text-muted">12:00 PM | Aug 13</p>
           </div>
         </div>
-
-        <!-- Sender Message-->
-        
-
-        <!-- Reciever Message-->
         <div class="media w-50 ml-auto mb-3">
           <div class="media-body">
             <div class="bg-primary rounded py-2 px-3 mb-2">
-              <p class="text-small mb-0 text-white">Apollo University, Delhi, India Test</p>
+              <p class="text-small mb-0 text-white">Test which is a new approach to have all solutions</p>
             </div>
             <p class="small text-muted">12:00 PM | Aug 13</p>
           </div>
         </div>
+        
+
+     
+        
 
         <!-- Sender Message-->
         <div class="media w-50 mb-3"><img src="https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg" alt="user" width="50" class="rounded-circle">
@@ -79,22 +58,14 @@
           </div>
         </div>
 
-        <!-- Reciever Message-->
-        <div class="media w-50 ml-auto mb-3">
-          <div class="media-body">
-            <div class="bg-primary rounded py-2 px-3 mb-2">
-              <p class="text-small mb-0 text-white">Apollo University, Delhi, India Test</p>
-            </div>
-            <p class="small text-muted">12:00 PM | Aug 13</p>
-          </div>
-        </div>
+       
 
       </div>
 
       <!-- Typing area -->
-      <form action="#" class="bg-light">
+      <form action="#" class="bg-light" id="message-form">
         <div class="input-group">
-          <input type="text" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+          <input type="text" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light" id="message">
           <div class="input-group-append">
             <button id="button-addon2" type="submit" class="btn btn-link"> <i class="fa fa-paper-plane"></i></button>
           </div>
