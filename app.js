@@ -16,6 +16,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const io = require('socket.io')(server);
+const { users, isExistUser, disconnectUser } = require('./client');
 // Connect to database
 const db = require('./db/connect');
 db.connect();
@@ -52,20 +53,22 @@ app.use((error, req, res, next) => {
         error: error.message
     })
 })
-let users = [];
-const isExistUser = (name) => {
-    return users.map(user => user.userName).includes(name);
-}
+
 io.on('connection', (socket) => {
     socket.on('user_connect', (data) => {
-        if (!isExistUser(data.userName)) users.push({
-            data
-        });
-        io.emit('newUser', users);
+        const index = isExistUser(data.userName);
+        if (index == -1) users.push(data);
+        else users[index] = data;
+        io.emit('renderUser', users);
     })
-    socket.on('send_message', (message) => {
-        console.log(message);
-        io.emit('receive_message', message);
+    socket.on('send_private_message', (data) => {
+        console.log(data);
+        io.to(data.receiverID).emit('receive_private_message', data);
+    })
+    socket.on('disconnect', () => {
+        console.log('disconnect');
+        disconnectUser(socket.id);
+        io.emit('renderUser', users);
     })
 })
 server.listen(3000, () => console.log(`Listening on port 3000`));
