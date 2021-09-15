@@ -16,7 +16,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const io = require('socket.io')(server);
-const { users, isExistUser, disconnectUser } = require('./client');
+const { users, isExistUser, disconnectUser, renderUser } = require('./client');
 // Connect to database
 const db = require('./db/connect');
 db.connect();

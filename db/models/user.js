@@ -13,6 +13,9 @@ const userShema = new Schema({
     password: {
         type: String
     },
+    image: {
+        type: String,
+    },
     fbID: {
         type: String, 
         default: null

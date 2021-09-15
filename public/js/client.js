@@ -4,6 +4,7 @@ const userBox = document.getElementById('user-box');
 const chatBox = document.getElementById('chat-box');
 const message = document.getElementById('message');
 const form = document.getElementById('message-form');
+const image = document.getElementById('image');
 let receiverID;
 const getSocket = function(e, event){
     receiverID = e.dataset.id;
@@ -14,7 +15,7 @@ function renderNewReceiverMessage(newMessage){
     const datestring = date.getDate()  + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " " +
     date.getHours() + ":" + date.getMinutes();
     chatBox.innerHTML += `
-        <div class="media w-50 mb-3"><img src="https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg" alt="user" width="50" class="rounded-circle">
+        <div class="media w-50 mb-3"><img src="${newMessage.image}" alt="user" width="50" class="rounded-circle">
             <div class="media-body ml-3">
                 <div class="bg-light rounded py-2 px-3 mb-2">
                     <p class="text-small mb-0 text-muted">${newMessage.message}</p>
@@ -45,14 +46,17 @@ socket.on('connect', () => {
     receiverID = socket.id;
     socket.emit('user_connect', {
         userName: user.innerText,
-        userID: socket.id
+        userID: socket.id,
+        image: image.src
     });
     socket.on('renderUser', (users) => {
+        console.log(users);
         userBox.innerHTML = '';
         for (u of users){
+            if (u.userID === socket.id) continue;
             userBox.innerHTML += `
                 <a href="?id=${u.userID}"class="list-group-item list-group-item-action list-group-item-light rounded-0 id-message" data-id="${u.userID}" onclick=getSocket(this,event)>
-                    <div class="media"><img src="https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg" alt="user" width="50" class="rounded-circle">
+                    <div class="media"><img src="${u.image}" alt="user" width="50" class="rounded-circle">
                         <div class="media-body ml-4">
                             <div class="d-flex align-items-center justify-content-between mb-1">
                                 <h6 class="mb-0">${u.userName}</h6><small class="small font-weight-bold">14 Dec</small>
@@ -69,6 +73,7 @@ socket.on('connect', () => {
         const senderMessage = {
             receiverID,
             message: message.value,
+            image: image.src,
             sendAt: new Date()
         }
         renderNewSenderMessage(senderMessage);
@@ -79,4 +84,10 @@ socket.on('connect', () => {
         console.log(receiverMessage);
         renderNewReceiverMessage(receiverMessage);
     });
+    socket.on('reloadUser', () => {
+        socket.emit('loadUser', {
+            userName: user.innerText,
+            userID: socket.id
+        })
+    })
 })

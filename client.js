@@ -9,8 +9,12 @@ const disconnectUser = (socketID) => {
         users.splice(index, 1);
     }
 }
+const renderUser = (userName) => {
+    return users.filter(user => user.userName !== userName);
+}
 module.exports = {
     users,
     isExistUser,
-    disconnectUser
+    disconnectUser,
+    renderUser
 }
