@@ -5,10 +5,32 @@ const chatBox = document.getElementById('chat-box');
 const message = document.getElementById('message');
 const form = document.getElementById('message-form');
 const image = document.getElementById('image');
+const userID = document.getElementById('user-id');
 let receiverID;
-const getSocket = function(e, event){
-    receiverID = e.dataset.id;
+let receiverSocket;
+const getSocket = async function(e, event){
     event.preventDefault();
+    receiverSocket = e.dataset.socketid;
+    receiverID = e.dataset.id;
+    const res = await fetch(`https://localhost:3000/message/private?senderID=${userID.innerText}&receiverID=${receiverID}`)
+    let messages = await res.json();
+    messages = messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    chatBox.innerHTML = '';
+    for (mes of messages){
+        if (mes.senderID === userID.innerText) {
+            renderNewSenderMessage({
+                sendAt: mes.createdAt,
+                message: mes.message
+            })
+        }else{
+            renderNewReceiverMessage({
+                sendAt: mes.createdAt,
+                message: mes.message,
+                image: mes.senderImage
+            })
+        }
+    }
+    console.log(messages);
 }
 function renderNewReceiverMessage(newMessage){
     const date = new Date(newMessage.sendAt);
@@ -43,19 +65,19 @@ function renderNewSenderMessage(newMessage) {
     message.focus();
 }
 socket.on('connect', () => {
-    receiverID = socket.id;
+    receiverSocket = socket.id;
     socket.emit('user_connect', {
+        userID: userID.innerText,
         userName: user.innerText,
-        userID: socket.id,
+        userSocket: socket.id,
         image: image.src
     });
     socket.on('renderUser', (users) => {
-        console.log(users);
         userBox.innerHTML = '';
         for (u of users){
-            if (u.userID === socket.id) continue;
+            if (u.userSocket === socket.id) continue;
             userBox.innerHTML += `
-                <a href="?id=${u.userID}"class="list-group-item list-group-item-action list-group-item-light rounded-0 id-message" data-id="${u.userID}" onclick=getSocket(this,event)>
+                <a href="?id=${u.userSocket}"class="list-group-item list-group-item-action list-group-item-light rounded-0 id-message" data-id="${u.userID}" data-socketid= "${u.userSocket}" onclick=getSocket(this,event)>
                     <div class="media"><img src="${u.image}" alt="user" width="50" class="rounded-circle">
                         <div class="media-body ml-4">
                             <div class="d-flex align-items-center justify-content-between mb-1">
@@ -71,7 +93,9 @@ socket.on('connect', () => {
     form.onsubmit = (e) => {
         e.preventDefault();
         const senderMessage = {
-            receiverID,
+            senderID: userID.innerText,
+            receiverID: receiverID,
+            receiverSocket,
             message: message.value,
             image: image.src,
             sendAt: new Date()
@@ -81,7 +105,6 @@ socket.on('connect', () => {
         
     }
     socket.on('receive_private_message', (receiverMessage) => {
-        console.log(receiverMessage);
         renderNewReceiverMessage(receiverMessage);
     });
     socket.on('reloadUser', () => {

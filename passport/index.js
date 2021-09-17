@@ -57,7 +57,8 @@ passport.use(new FacebookStrategy({
                 name: profile.displayName,
                 fbID: profile.id,
                 email: profile.emails[0].value,
-                authType: 'facebook'
+                authType: 'facebook',
+                image: profile.photos[0].value
             })
             await newUser.save();
             done(null, newUser);
@@ -76,6 +77,7 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try{
+        console.log(profile);
         const user = await User.findOne({
             ggID: profile.id,
             authType: 'google',
@@ -86,7 +88,8 @@ passport.use(new GoogleStrategy({
                 name: profile.displayName,
                 ggID: profile.id,
                 authType: 'google',
-                email: profile.emails[0].value
+                email: profile.emails[0].value,
+                image: profile.photos[0].value
             })
             newUser.save();
             done(null, newUser);
